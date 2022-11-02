@@ -1,5 +1,5 @@
 {
-  "name": "drop-effect",
+  "name": "psikick",
   "version": "1.0.0",
   "main": "index.js",
   "author": "oWave",
@@ -11,13 +11,15 @@
     "lint": "eslint src/"
   },
   "devDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-types": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types.git",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "esbuild": "^0.15.12",
     "eslint": "^8.26.0",
-    "typescript": "*",
-    "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0"
+    "typescript": "*"
   },
-  "dependencies": {
+  "dependencies": {},
+  "prettier": {
+    "semi": false
   }
 }
