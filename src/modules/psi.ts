@@ -2,7 +2,7 @@ import { MODULE_NAME } from "../constants"
 import { Module } from "../types"
 
 async function prompt(limit: number, remaining: number, max: number) {
-  return await new Promise<number>((resolve, reject) => {
+  return await new Promise<number|null>((resolve, reject) => {
     new Dialog({
       title: "Psi",
       content: `
@@ -28,9 +28,16 @@ async function prompt(limit: number, remaining: number, max: number) {
           },
           icon: '<i class="fas fa-check"></i>',
         },
+        skip: {
+          label: "Skip",
+          callback: () => {
+            resolve(null)
+          },
+          icon: '<i class="fas fa-arrow-turn-down-right"></i>',
+        },
         cancel: {
           label: "Cancel",
-          callback: (html) => reject("Prompt canceled"),
+          callback: () => reject("Prompt canceled"),
           icon: '<i class="fas fa-x"></i>',
         },
       },
@@ -39,6 +46,10 @@ async function prompt(limit: number, remaining: number, max: number) {
 }
 
 const helper = {
+  isPsion(actor: Actor) {
+    return !!actor.classes.psion
+  },
+
   psiLimitFromLevel(level: number) {
     if (level > 20 || level < 1) throw new RangeError("Bad level")
 
@@ -47,7 +58,8 @@ const helper = {
   },
 
   psiUsed(actor: Actor) {
-    return (actor.getFlag(MODULE_NAME, "used") as number) || 0
+    // return (actor.getFlag(MODULE_NAME, "used") as number) || 0
+    return actor.system.resources.secondary.value
   },
 
   psiLimit(actor: Actor) {
@@ -72,7 +84,8 @@ const helper = {
       return false
     }
 
-    actor.setFlag("psikick", "used", this.psiUsed(actor) + amount)
+    // actor.setFlag("psikick", "used", this.psiUsed(actor) + amount)
+    actor.system.resources.secondary.value += amount
     actor.system.resources.primary.value -= amount
     this.whisper(
       `Spend ${amount} Psi Points. ${remaining - amount} left (${
@@ -83,15 +96,17 @@ const helper = {
   },
 
   startTurn(actor: Actor) {
-    const used = actor.getFlag(MODULE_NAME, "used")
+    if (!this.isPsion(actor)) return
+    const used = actor.system.resources.secondary.value
     if (!used) return
     this.whisper(
       `<b>Turn Start:</b> ${actor.name} Psi Used reset to 0 (was ${used})`
     )
-    actor.setFlag(MODULE_NAME, "used", 0)
+    // actor.setFlag(MODULE_NAME, "used", 0)
+    actor.system.resources.secondary.value = 0
   },
 
-  async prompt(actor: Actor, max: number) {
+  async prompt(actor: Actor, min: number, max: number) {
     return prompt(this.psiLimit(actor), this.psiRemaining(actor), max)
   },
 
