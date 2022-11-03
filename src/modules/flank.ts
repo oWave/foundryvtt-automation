@@ -75,14 +75,15 @@ const onOppositeSides = (
 }
 
 function isFlanking(attacker: Token, target: Token) {
-  if (!canFlank(attacker.actor!)) return false
+  if (!attacker.actor || !canFlank(attacker.actor)) return false
 
   // All allies that can attack the target
   const candidates = canvas.tokens?.placeables.filter((t) => {
     if (t.id == attacker.id || t.id == target.id) return false
     return (
+      !!t.actor &&
       t.document.disposition == attacker.document.disposition &&
-      canFlank(t.actor!) &&
+      canFlank(t.actor) &&
       inAttackRange(t, target)
     )
   })
