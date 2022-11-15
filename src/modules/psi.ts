@@ -125,6 +125,7 @@ const module: Module = {
     window.psi = helper
 
     Hooks.on("updateCombat", (combat: Combat, _, data) => {
+      if (!game.settings.get(MODULE_NAME, "psi.enabled")) return;
       if (!data.diff || data.direction !== 1) return
       if (combat.combatant?.actor) helper.startTurn(combat.combatant?.actor)
     })
@@ -132,6 +133,7 @@ const module: Module = {
     game.settings.register(MODULE_NAME, "psi.enabled", {
       name: "Psi Point Automation",
       hint: "Enables psi limit reset automation",
+      scope: "world",
       config: true,
       default: true,
       type: Boolean,

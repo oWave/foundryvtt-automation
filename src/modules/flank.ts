@@ -147,6 +147,7 @@ const module = {
     game.settings.register(MODULE_NAME, "flank.enabled", {
       name: "Flank Automation",
       hint: "Enables flanking automation",
+      scope: "world",
       config: true,
       default: true,
       type: Boolean,
@@ -155,6 +156,7 @@ const module = {
     game.settings.register(MODULE_NAME, "flank.bonus", {
       name: "Flank Bonus",
       hint: "Melee attack roll bonus when flanking",
+      scope: "world",
       config: true,
       default: 2,
       range: {
