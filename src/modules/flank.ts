@@ -104,6 +104,8 @@ function isFlanking(attacker: Token, target: Token) {
 
 function onAttack(item: Item, config) {
   if (game.user?.targets.size !== 1) return
+  if (!["mwak", "msak"].includes(item.system.actionType)) return
+
   const target = [...game.user.targets][0]
   const attacker =
     item.actor?.token?.object ||
@@ -111,7 +113,9 @@ function onAttack(item: Item, config) {
   if (!attacker) return
 
   if (isFlanking(attacker as Token, target)) {
-    config.parts.push(`${game.settings.get(MODULE_NAME, "flank.bonus")}[Flanking]`)
+    config.parts.push(
+      `${game.settings.get(MODULE_NAME, "flank.bonus")}[Flanking]`
+    )
     config.messageData[`flags.${MODULE_NAME}.flanking`] = true
   }
 }
