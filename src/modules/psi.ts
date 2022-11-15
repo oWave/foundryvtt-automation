@@ -127,7 +127,8 @@ const module: Module = {
     Hooks.on("updateCombat", (combat: Combat, _, data) => {
       if (!game.settings.get(MODULE_NAME, "psi.enabled")) return;
       if (!data.diff || data.direction !== 1) return
-      if (combat.combatant?.actor) helper.startTurn(combat.combatant?.actor)
+      const actor = combat.combatant?.actor
+      if (actor && actor.isOwner) helper.startTurn(combat.combatant?.actor)
     })
 
     game.settings.register(MODULE_NAME, "psi.enabled", {
